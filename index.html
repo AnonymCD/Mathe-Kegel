@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Der Kegel – Mathematik Klasse 9</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #13161e;
+      --surface2: #1c2030;
+      --accent: #f4a533;
+      --accent2: #e05c2e;
+      --text: #edeae3;
+      --text-muted: #8a8a9a;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; gap: 2rem; justify-content: center; align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(13,15,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
+      letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--accent); }
+
+    /* SECTIONS */
+    section {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      padding: 7rem 1.5rem 4rem;
+      position: relative;
+    }
+
+    .container { max-width: 900px; width: 100%; }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 900;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    p { color: var(--text-muted); font-size: 1.05rem; }
+
+    .tag {
+      display: inline-block;
+      background: rgba(244,165,51,0.12);
+      color: var(--accent);
+      border: 1px solid rgba(244,165,51,0.3);
+      padding: 0.25rem 0.8rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* HERO */
+    #hero { text-align: center; overflow: hidden; }
+
+    #hero .subtitle {
+      font-size: 1.15rem; color: var(--text-muted);
+      margin: 1.5rem 0 3rem; max-width: 500px; margin-inline: auto;
+    }
+
+    /* Animated cone SVG */
+    .hero-cone {
+      width: 220px; height: 260px; margin: 0 auto 3rem;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-18px); }
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      color: var(--text-muted); font-size: 0.75rem; letter-spacing: 0.1em;
+    }
+    .scroll-hint span { display: block; width: 1px; height: 40px; background: var(--accent); opacity: 0.5; animation: scrollLine 1.8s ease-in-out infinite; }
+    @keyframes scrollLine { 0%,100%{transform:scaleY(1);opacity:.5} 50%{transform:scaleY(0.4);opacity:1} }
+
+    /* CARDS */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem; margin-top: 2.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .card:hover {
+      border-color: rgba(244,165,51,0.35);
+      transform: translateY(-4px);
+    }
+    .card .icon { font-size: 2rem; margin-bottom: 1rem; }
+
+    /* FORMULA SECTION */
+    #formeln { background: var(--surface); }
+
+    .formula-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-top: 1.5rem;
+      font-family: 'Playfair Display', serif;
+    }
+    .formula-block .formula-name { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; font-family: 'Source Sans 3', sans-serif; }
+    .formula-block .formula-math { font-size: 1.4rem; color: var(--accent); }
+    .formula-block .formula-legend { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem; font-family: 'Source Sans 3', sans-serif; }
+
+    /* PARTS */
+    .parts-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem; align-items: center;
+      margin-top: 2rem;
+    }
+    @media(max-width: 640px) { .parts-layout { grid-template-columns: 1fr; } }
+
+    .parts-list { list-style: none; }
+    .parts-list li {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1rem 0; border-bottom: 1px solid var(--border);
+    }
+    .parts-list li:last-child { border-bottom: none; }
+    .parts-list .num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0; color: #fff;
+    }
+
+    /* EXAMPLES */
+    .example-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 1.5rem;
+    }
+    .example-box .step {
+      display: flex; gap: 1rem; padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .example-box .step:last-child { border-bottom: none; }
+    .example-box .step-num {
+      width: 26px; height: 26px; background: var(--accent2); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; flex-shrink: 0; color: #fff;
+    }
+
+    /* REAL WORLD */
+    .world-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .world-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    .world-item:hover { border-color: rgba(244,165,51,0.35); }
+    .world-item .wi-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .world-item .wi-name { font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+    .world-item p { font-size: 0.85rem; }
+
+    /* QUIZ */
+    #quiz { background: var(--surface); }
+    .quiz-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem; margin-top: 2rem;
+    }
+    .quiz-question { font-size: 1.1rem; color: var(--text); margin-bottom: 1.5rem; font-weight: 600; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.75rem; }
+    .quiz-opt {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.9rem 1.2rem; cursor: pointer;
+      color: var(--text-muted); font-size: 0.95rem; text-align: left;
+      transition: all 0.2s;
+    }
+    .quiz-opt:hover { border-color: rgba(244,165,51,0.4); color: var(--text); }
+    .quiz-opt.correct { background: rgba(34,197,94,0.1); border-color: #22c55e; color: #22c55e; }
+    .quiz-opt.wrong { background: rgba(239,68,68,0.1); border-color: #ef4444; color: #ef4444; }
+    .quiz-feedback { margin-top: 1rem; font-size: 0.95rem; min-height: 1.4em; }
+    .quiz-next {
+      margin-top: 1.5rem; padding: 0.7rem 1.8rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 8px; color: #fff; cursor: pointer;
+      font-weight: 600; font-size: 0.95rem; display: none;
+      transition: opacity 0.2s;
+    }
+    .quiz-next:hover { opacity: 0.85; }
+    .quiz-score { font-size: 1.3rem; font-weight: 600; color: var(--accent); }
+
+    /* SEPARATOR */
+    .section-divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px; margin-bottom: 1.5rem;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 3rem 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted); font-size: 0.85rem;
+    }
+
+    /* REVEAL ANIMATION */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* Decorative bg circles */
+    .bg-blob {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.08; pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero">Start</a>
+  <a href="#eigenschaften">Eigenschaften</a>
+  <a href="#formeln">Formeln</a>
+  <a href="#beispiel">Beispiel</a>
+  <a href="#anwendung">Anwendung</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section id="hero">
+  <div class="bg-blob" style="width:500px;height:500px;background:var(--accent);top:-100px;right:-150px;"></div>
+  <div class="bg-blob" style="width:400px;height:400px;background:var(--accent2);bottom:-80px;left:-100px;"></div>
+
+  <div class="container" style="text-align:center;">
+    <div class="tag" style="margin-bottom:1.5rem;">Mathematik · Klasse 9</div>
+
+    <svg class="hero-cone" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="coneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f4a533"/>
+          <stop offset="100%" style="stop-color:#e05c2e"/>
+        </linearGradient>
+        <linearGradient id="baseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#f4a533;stop-opacity:0.9"/>
+          <stop offset="100%" style="stop-color:#b87320;stop-opacity:0.6"/>
+        </linearGradient>
+        <radialGradient id="ellGrad" cx="50%" cy="30%">
+          <stop offset="0%" style="stop-color:#ffd580"/>
+          <stop offset="100%" style="stop-color:#c67c1a"/>
+        </radialGradient>
+      </defs>
+      <!-- Cone body -->
+      <polygon points="110,20 10,230 210,230" fill="url(#coneGrad)" opacity="0.95"/>
+      <!-- Shadow side -->
+      <polygon points="110,20 165,230 210,230" fill="#b8460e" opacity="0.35"/>
+      <!-- Base ellipse -->
+      <ellipse cx="110" cy="230" rx="100" ry="18" fill="url(#baseGrad)"/>
+      <!-- Apex dot -->
+      <circle cx="110" cy="20" r="5" fill="#fff" opacity="0.9"/>
+      <!-- Height line -->
+      <line x1="110" y1="20" x2="110" y2="230" stroke="#fff" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.4"/>
+      <!-- Labels -->
+      <text x="118" y="130" fill="#fff" font-size="13" font-family="Georgia,serif" opacity="0.7">h</text>
+      <text x="115" y="252" fill="#f4a533" font-size="13" font-family="Georgia,serif" opacity="0.8">r</text>
+      <line x1="110" y1="230" x2="210" y2="230" stroke="#f4a533" stroke-width="1.5" opacity="0.5"/>
+      <!-- Slant line label -->
+      <line x1="110" y1="20" x2="210" y2="230" stroke="#ffd580" stroke-width="1.5" stroke-dasharray="5 4" opacity="0.4"/>
+      <text x="168" y="130" fill="#ffd580" font-size="12" font-family="Georgia,serif" opacity="0.7">s</text>
+    </svg>
+
+    <h1>Der Kegel</h1>
+    <p class="subtitle">Ein geometrischer Körper – Eigenschaften, Formeln und Anwendungen</p>
+
+    <a href="#eigenschaften" style="display:inline-block;padding:0.8rem 2.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50px;color:#fff;font-weight:600;text-decoration:none;letter-spacing:0.05em;transition:opacity .2s;" onmouseover="this.style.opacity='.82'" onmouseout="this.style.opacity='1'">Präsentation starten</a>
+  </div>
+
+  <div class="scroll-hint">
+    <p style="font-size:0.7rem;letter-spacing:.12em;text-transform:uppercase;">Scrollen</p>
+    <span></span>
+  </div>
+</section>
+
+<!-- ═══════════════════════ EIGENSCHAFTEN ═══════════════════════ -->
+<section id="eigenschaften">
+  <div class="container reveal">
+    <div class="tag">Grundlagen</div>
+    <h2 style="margin-top:0.8rem;">Was ist ein Kegel?</h2>
+    <div class="section-divider"></div>
+    <p>Ein Kegel ist ein geometrischer Körper mit einer <strong style="color:var(--text)">kreisförmigen Grundfläche</strong> und einer <strong style="color:var(--text)">Spitze (Apex)</strong>, die senkrecht über dem Mittelpunkt der Grundfläche liegt.</p>
+
+    <div class="card-grid" style="margin-top:2.5rem;">
+      <div class="card">
+        <div class="icon">📐</div>
+        <h3>Grundfläche</h3>
+        <p>Die Grundfläche ist ein <strong style="color:var(--text)">Kreis</strong> mit dem Radius <em>r</em>. Fläche: A = π · r²</p>
+      </div>
+      <div class="card">
+        <div class="icon">📏</div>
+        <h3>Höhe h</h3>
+        <p>Der senkrechte Abstand von der Spitze zum Mittelpunkt der Grundfläche.</p>
+      </div>
+      <div class="card">
+        <div class="icon">📐</div>
+        <h3>Mantellinie s</h3>
+        <p>Die Verbindungslinie von der Spitze zu einem Punkt auf dem Grundkreis. Es gilt: <em>s² = r² + h²</em></p>
+      </div>
+      <div class="card">
+        <div class="icon">🔺</div>
+        <h3>Seitenmantel</h3>
+        <p>Die gebogene Außenfläche des Kegels zwischen Grundkreis und Spitze.</p>
+      </div>
+    </div>
+
+    <div class="parts-layout" style="margin-top:3rem;">
+      <div>
+        <h3 style="color:var(--text); font-family:'Playfair Display',serif;">Bestandteile im Überblick</h3>
+        <ul class="parts-list">
+          <li><div class="num">r</div><div><strong style="color:var(--text)">Radius</strong><br><span style="color:var(--text-muted);font-size:.9rem;">Halbmesser der Grundfläche</span></div></li>
+          <li><div class="num">h</div><div><strong style="color:var(--text)">Höhe</strong><br><span style="color:var(--text-muted);font-size:.9rem;">Senkrechter Abstand Spitze–Grundfläche</span></div></li>
+          <li><div class="num">s</div><div><strong style="color:var(--text)">Mantellinie</strong><br><span style="color:var(--text-muted);font-size:.9rem;">Länge der schrägen Seitenlinie</span></div></li>
+          <li><div class="num">d</div><div><strong style="color:var(--text)">Durchmesser</strong><br><span style="color:var(--text-muted);font-size:.9rem;">d = 2 · r</span></div></li>
+        </ul>
+      </div>
+      <div style="text-align:center;">
+        <!-- Labeled cone diagram -->
+        <svg viewBox="0 0 200 230" xmlns="http://www.w3.org/2000/svg" style="max-width:220px;width:100%;">
+          <defs>
+            <linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f4a533;stop-opacity:.9"/>
+              <stop offset="100%" style="stop-color:#e05c2e;stop-opacity:.9"/>
+            </linearGradient>
+          </defs>
+          <polygon points="100,15 10,210 190,210" fill="url(#cg2)"/>
+          <polygon points="100,15 155,210 190,210" fill="#b8460e" opacity="0.3"/>
+          <ellipse cx="100" cy="210" rx="90" ry="15" fill="#c67c1a" opacity="0.85"/>
+          <!-- height -->
+          <line x1="100" y1="15" x2="100" y2="210" stroke="#fff" stroke-dasharray="5,4" stroke-width="1.5" opacity="0.6"/>
+          <text x="107" y="120" fill="#fff" font-size="14" font-family="Georgia">h</text>
+          <!-- radius -->
+          <line x1="100" y1="210" x2="190" y2="210" stroke="#fff" stroke-width="1.5"/>
+          <text x="140" y="228" fill="#fff" font-size="13" font-family="Georgia">r</text>
+          <!-- slant -->
+          <line x1="100" y1="15" x2="190" y2="210" stroke="#ffd580" stroke-dasharray="5,4" stroke-width="1.5"/>
+          <text x="158" y="120" fill="#ffd580" font-size="13" font-family="Georgia">s</text>
+          <!-- apex dot -->
+          <circle cx="100" cy="15" r="4" fill="#fff"/>
+          <text x="106" y="13" fill="#fff" font-size="11" font-family="Georgia">Spitze</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FORMELN ═══════════════════════ -->
+<section id="formeln">
+  <div class="container reveal">
+    <div class="tag">Mathematik</div>
+    <h2 style="margin-top:0.8rem;">Die wichtigsten Formeln</h2>
+    <div class="section-divider"></div>
+    <p>Alle Formeln des Kegels lassen sich aus Radius <em>r</em>, Höhe <em>h</em> und Mantellinie <em>s</em> ableiten.</p>
+
+    <div class="formula-block reveal">
+      <div class="formula-name">Mantellinie (Satz des Pythagoras)</div>
+      <div class="formula-math">s = √(r² + h²)</div>
+      <div class="formula-legend">r = Radius · h = Höhe · s = Mantellinie</div>
+    </div>
+
+    <div class="formula-block reveal">
+      <div class="formula-name">Grundfläche</div>
+      <div class="formula-math">G = π · r²</div>
+      <div class="formula-legend">Die Grundfläche ist ein vollständiger Kreis mit Radius r</div>
+    </div>
+
+    <div class="formula-block reveal">
+      <div class="formula-name">Mantelfläche</div>
+      <div class="formula-math">M = π · r · s</div>
+      <div class="formula-legend">s = Mantellinie = √(r² + h²)</div>
+    </div>
+
+    <div class="formula-block reveal">
+      <div class="formula-name">Oberfläche (gesamt)</div>
+      <div class="formula-math">O = G + M = π · r² + π · r · s = π · r · (r + s)</div>
+      <div class="formula-legend">Grundfläche + Mantelfläche</div>
+    </div>
+
+    <div class="formula-block reveal" style="border-left-color:var(--accent2);">
+      <div class="formula-name">Volumen ⭐ Wichtigste Formel!</div>
+      <div class="formula-math" style="font-size:1.6rem;">V = ⅓ · π · r² · h</div>
+      <div class="formula-legend">Ein Drittel des Zylinder-Volumens mit gleichen Maßen</div>
+    </div>
+
+    <div class="card" style="margin-top:2rem;background:rgba(244,165,51,0.07);border-color:rgba(244,165,51,0.2);">
+      <h3>💡 Merkhilfe: Kegel vs. Zylinder</h3>
+      <p style="margin-top:0.5rem;">Ein Kegel fasst genau <strong style="color:var(--accent)">⅓</strong> des Volumens eines Zylinders mit gleicher Grundfläche und gleicher Höhe. Das lässt sich sogar mit Wasser beweisen!</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ BEISPIEL ═══════════════════════ -->
+<section id="beispiel">
+  <div class="container reveal">
+    <div class="tag">Gerechnet</div>
+    <h2 style="margin-top:0.8rem;">Rechenbeispiel</h2>
+    <div class="section-divider"></div>
+    <p>Ein Kegel hat den Radius <strong style="color:var(--accent)">r = 6 cm</strong> und die Höhe <strong style="color:var(--accent)">h = 8 cm</strong>. Berechne alle Maße.</p>
+
+    <div class="example-box">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <strong style="color:var(--text)">Mantellinie berechnen</strong><br>
+          <span style="color:var(--text-muted)">s = √(r² + h²) = √(6² + 8²) = √(36 + 64) = √100 = <strong style="color:var(--accent)">10 cm</strong></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <strong style="color:var(--text)">Grundfläche berechnen</strong><br>
+          <span style="color:var(--text-muted)">G = π · r² = π · 6² = π · 36 ≈ <strong style="color:var(--accent)">113,10 cm²</strong></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <strong style="color:var(--text)">Mantelfläche berechnen</strong><br>
+          <span style="color:var(--text-muted)">M = π · r · s = π · 6 · 10 = 60π ≈ <strong style="color:var(--accent)">188,50 cm²</strong></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <strong style="color:var(--text)">Oberfläche berechnen</strong><br>
+          <span style="color:var(--text-muted)">O = G + M = 36π + 60π = 96π ≈ <strong style="color:var(--accent)">301,59 cm²</strong></span>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div>
+          <strong style="color:var(--text)">Volumen berechnen</strong><br>
+          <span style="color:var(--text-muted)">V = ⅓ · π · r² · h = ⅓ · π · 36 · 8 = 96π ≈ <strong style="color:var(--accent)">301,59 cm³</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini calculator -->
+    <div class="card" style="margin-top:2rem;">
+      <h3>🧮 Schnell-Rechner</h3>
+      <p style="margin-bottom:1rem;">Gib eigene Werte ein:</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <label style="color:var(--text-muted);font-size:.9rem;">r (cm): <input id="inp-r" type="number" value="6" min="0.1" step="0.1" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .7rem;color:var(--text);width:80px;margin-left:.4rem;" oninput="calcCone()"></label>
+        <label style="color:var(--text-muted);font-size:.9rem;">h (cm): <input id="inp-h" type="number" value="8" min="0.1" step="0.1" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.4rem .7rem;color:var(--text);width:80px;margin-left:.4rem;" oninput="calcCone()"></label>
+      </div>
+      <div id="calc-out" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ANWENDUNG ═══════════════════════ -->
+<section id="anwendung">
+  <div class="container reveal">
+    <div class="tag">Realwelt</div>
+    <h2 style="margin-top:0.8rem;">Kegel im Alltag</h2>
+    <div class="section-divider"></div>
+    <p>Kegel begegnen uns überall – von der Eistüte bis zur Verkehrsabsicherung.</p>
+
+    <div class="world-grid">
+      <div class="world-item">
+        <div class="wi-icon">🍦</div>
+        <div class="wi-name">Eistüte</div>
+        <p>Ein klassisches Beispiel: Waffelkegel mit kreisrundem Querschnitt.</p>
+      </div>
+      <div class="world-item">
+        <div class="wi-icon">🚧</div>
+        <div class="wi-name">Verkehrskegel</div>
+        <p>Auch Pylonen genannt – sichern Baustellen und Gefahrenstellen ab.</p>
+      </div>
+      <div class="world-item">
+        <div class="wi-icon">🏔️</div>
+        <div class="wi-name">Vulkan</div>
+        <p>Viele Vulkane haben eine kegelförmige Gestalt durch Lavaablagerungen.</p>
+      </div>
+      <div class="world-item">
+        <div class="wi-icon">🎄</div>
+        <div class="wi-name">Tannenbaum</div>
+        <p>Die typische Weihnachtsbaumform ist ein annähernder Kegel.</p>
+      </div>
+      <div class="world-item">
+        <div class="wi-icon">🎪</div>
+        <div class="wi-name">Zirkuszelt</div>
+        <p>Klassische Zirkuszelte haben ein kegelförmiges Dach.</p>
+      </div>
+      <div class="world-item">
+        <div class="wi-icon">🏹</div>
+        <div class="wi-name">Raketenspitze</div>
+        <p>Raketen und Flugzeuge nutzen Kegelformen für aerodynamische Nasen.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ QUIZ ═══════════════════════ -->
+<section id="quiz">
+  <div class="container reveal">
+    <div class="tag">Teste dich!</div>
+    <h2 style="margin-top:0.8rem;">Quiz</h2>
+    <div class="section-divider"></div>
+    <p>Wie gut kennst du den Kegel? Beantworte die Fragen und überprüfe dein Wissen.</p>
+
+    <div class="quiz-box">
+      <div id="q-container">
+        <div class="quiz-question" id="q-text"></div>
+        <div class="quiz-options" id="q-opts"></div>
+        <div class="quiz-feedback" id="q-feedback"></div>
+        <button class="quiz-next" id="q-next" onclick="nextQuestion()">Weiter →</button>
+      </div>
+      <div id="q-result" style="display:none;text-align:center;padding:1rem;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;">🎉</div>
+        <div class="quiz-score" id="q-score-text"></div>
+        <p style="margin-top:0.5rem;" id="q-verdict"></p>
+        <button onclick="resetQuiz()" style="margin-top:1.5rem;padding:.6rem 1.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);cursor:pointer;font-size:.9rem;">Nochmal versuchen</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p style="color:var(--accent);font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:.5rem;">Der Kegel</p>
+  <p>Mathematik · Klasse 9 · Geometrie der Körper</p>
+  <p style="margin-top:.5rem;font-size:.8rem;">Erstellt mit HTML, CSS & JavaScript</p>
+</footer>
+
+<script>
+  // ── Scroll reveal ──
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.12 });
+  reveals.forEach(r => obs.observe(r));
+
+  // ── Calculator ──
+  function calcCone() {
+    const r = parseFloat(document.getElementById('inp-r').value) || 0;
+    const h = parseFloat(document.getElementById('inp-h').value) || 0;
+    const s = Math.sqrt(r*r + h*h);
+    const G = Math.PI * r * r;
+    const M = Math.PI * r * s;
+    const O = G + M;
+    const V = (1/3) * Math.PI * r * r * h;
+    const fmt = n => n.toFixed(2);
+    document.getElementById('calc-out').innerHTML = `
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;">Mantellinie s</div>
+        <div style="font-size:1.3rem;color:var(--accent);font-weight:600;">${fmt(s)} cm</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;">Grundfläche G</div>
+        <div style="font-size:1.3rem;color:var(--accent);font-weight:600;">${fmt(G)} cm²</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;">Mantelfläche M</div>
+        <div style="font-size:1.3rem;color:var(--accent);font-weight:600;">${fmt(M)} cm²</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;">
+        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;">Oberfläche O</div>
+        <div style="font-size:1.3rem;color:var(--accent);font-weight:600;">${fmt(O)} cm²</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid rgba(244,165,51,.4);border-radius:10px;padding:1rem;grid-column:span 2;">
+        <div style="font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;">Volumen V ⭐</div>
+        <div style="font-size:1.5rem;color:var(--accent);font-weight:600;">${fmt(V)} cm³</div>
+      </div>
+    `;
+  }
+  calcCone();
+
+  // ── Quiz ──
+  const questions = [
+    { q: "Wie lautet die Formel für das Volumen eines Kegels?", opts: ["V = π · r² · h", "V = ½ · π · r² · h", "V = ⅓ · π · r² · h", "V = ⅔ · π · r³"], ans: 2, expl: "✅ Richtig! V = ⅓ · π · r² · h – ein Drittel des entsprechenden Zylinders." },
+    { q: "Ein Kegel hat r = 3 cm und h = 4 cm. Wie lang ist die Mantellinie s?", opts: ["5 cm", "7 cm", "√7 cm", "√25 cm = 5 cm"], ans: 0, expl: "✅ s = √(3² + 4²) = √(9+16) = √25 = 5 cm" },
+    { q: "Wie berechnet man die Mantelfläche M eines Kegels?", opts: ["M = π · r · h", "M = π · r · s", "M = 2 · π · r · s", "M = π · r²"], ans: 1, expl: "✅ Mantelfläche: M = π · r · s, wobei s die Mantellinie ist." },
+    { q: "Was ist die Grundfläche eines Kegels mit r = 5 cm? (π ≈ 3,14)", opts: ["15,70 cm²", "31,40 cm²", "78,50 cm²", "157,00 cm²"], ans: 2, expl: "✅ G = π · r² = 3,14 · 25 = 78,50 cm²" },
+    { q: "Welche der folgenden Aussagen ist FALSCH?", opts: ["Ein Kegel hat genau eine Grundfläche", "Die Mantellinie ist länger als die Höhe", "Die Oberfläche = Grundfläche × Mantelfläche", "Das Volumen = ⅓ · G · h"], ans: 2, expl: "✅ Falsch ist: O = G + M (Addition, nicht Multiplikation!)" },
+  ];
+
+  let curQ = 0, score = 0, answered = false;
+
+  function loadQuestion() {
+    const q = questions[curQ];
+    document.getElementById('q-text').textContent = `Frage ${curQ+1} / ${questions.length}: ${q.q}`;
+    const opts = document.getElementById('q-opts');
+    opts.innerHTML = '';
+    q.opts.forEach((o, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = `${['A','B','C','D'][i]}) ${o}`;
+      btn.onclick = () => checkAnswer(i, btn, q);
+      opts.appendChild(btn);
+    });
+    document.getElementById('q-feedback').textContent = '';
+    document.getElementById('q-next').style.display = 'none';
+    answered = false;
+  }
+
+  function checkAnswer(i, btn, q) {
+    if (answered) return;
+    answered = true;
+    const allBtns = document.querySelectorAll('.quiz-opt');
+    allBtns.forEach((b,idx) => {
+      b.disabled = true;
+      if (idx === q.ans) b.classList.add('correct');
+    });
+    if (i === q.ans) {
+      score++;
+      document.getElementById('q-feedback').innerHTML = `<span style="color:#22c55e">${q.expl}</span>`;
+    } else {
+      btn.classList.add('wrong');
+      document.getElementById('q-feedback').innerHTML = `<span style="color:#ef4444">❌ Nicht ganz. ${q.expl}</span>`;
+    }
+    document.getElementById('q-next').style.display = 'inline-block';
+  }
+
+  function nextQuestion() {
+    curQ++;
+    if (curQ < questions.length) { loadQuestion(); }
+    else {
+      document.getElementById('q-container').style.display = 'none';
+      document.getElementById('q-result').style.display = 'block';
+      const pct = Math.round(score / questions.length * 100);
+      document.getElementById('q-score-text').textContent = `${score} / ${questions.length} Punkte (${pct}%)`;
+      const v = score === questions.length ? "Perfekt! 🌟 Du hast alles richtig!" : score >= 3 ? "Super gemacht! Noch ein bisschen üben." : "Schau dir die Formeln nochmal an – du schaffst das!";
+      document.getElementById('q-verdict').textContent = v;
+    }
+  }
+
+  function resetQuiz() {
+    curQ = 0; score = 0;
+    document.getElementById('q-container').style.display = 'block';
+    document.getElementById('q-result').style.display = 'none';
+    loadQuestion();
+  }
+
+  loadQuestion();
+</script>
+</body>
+</html>
